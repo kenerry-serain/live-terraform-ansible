@@ -1,0 +1,17 @@
+---
+- name: Reading Variable from Terraform
+  gather_facts: false
+  hosts: localhost
+  tasks:
+
+    - name: Terraform Outputs 
+      shell: terraform output -json > outputs.json
+      args:
+        chdir: ../terraform
+
+    - name: Get VPC Value
+      vars:
+        terraform_outputs: "{{ lookup('file', '../terraform/outputs.json') }}"
+        vpc_arn: "{{ terraform_outputs.vpc_arn.value }}"
+      debug:
+        var: vpc_arn
